@@ -1,4 +1,4 @@
-# Este archivo genera la base de datos de todos los participantes, asi como las caracteristicas y etiquetas correspondientes
+
 import pandas as pd
 import numpy as np
 import scipy as scipy
@@ -53,13 +53,13 @@ for filename in os.listdir(directory_path):
     nous = res[0].split('_')
     #Colocamos una etiqueta segun el elemento encontrado dentro del nombre del archivo
     if 'Abajo' in nous:
-        trgt = 'abajo'
+        trgt = 3
     elif 'Arriba' in nous:
-        trgt = 'arriba'
+        trgt = 1
     if 'Adentro' in nous:
-        trgt = 'adentro'
+        trgt = 4
     if 'Afuera' in nous:
-        trgt = 'afuera'
+        trgt = 2
 
     # Eliminar offset de la señal
     zeros = (data["EMG"][data["EMG"] != 0])
@@ -104,4 +104,4 @@ for filename in os.listdir(directory_path):
     #Agregamos el df auxiliar al df base
     df = df.append(df2)
 
-df.to_csv(r'C:\Users\hugo1\OneDrive\Documentos\Estancia Silla\data\dataEMG.csv', index = False)
+df.to_csv(r'C:\Users\hugo1\OneDrive\Documentos\dataEMG.csv', index = False)
