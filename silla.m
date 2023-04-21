@@ -38,6 +38,7 @@ for n = 2:3:length(file)
     alfa2 = 0;
     alfa3 = 0;
     
+    %tiene que coincidir con la clasificacion o etiqueta proporcionada
     y1ast = 1;
     W1 = [1 1 1 1 1 1 1];
     W2 = 0;
@@ -73,6 +74,8 @@ for n = 2:3:length(file)
     for i = 1:length(v4)
         vaux4(i) = v4(i); 
     end
+    
+    %% backpropagation
     
     % Para calcular sumatoria para W1
     for n1 = 1:length(entradas)
