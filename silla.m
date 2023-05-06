@@ -20,11 +20,11 @@ suma1 = 0;
 suma = 0;
 
 %Parametros de ajuste de los pesos
-alfa1 = 1;
-alfa2 = 0;
-alfa3 = 0;
-
-%% Estructura de la red
+alfa1 = 0.0008;
+alfa2 = 0.0004;
+alfa3 = 0.0003;
+alfa=0.3;
+%% Estructurade la red
 
 N1 = 21; %Capa de entrada
 N2 = 52; %Primer capa oculta
@@ -53,31 +53,28 @@ grad3 = zeros(N3, 1);
 
 % Para la funcion sigmoide 1
 a1 = ones(N1, 1);
-b1 = ones(N1, 1);
+b1 = 0.1*ones(N1, 1);
 c1 = ones(N1, 1);
 d1 = ones(N1, 1);
 
 % Para la funcion sigmoide 2
 a2 = ones(N2, 1);
-b2 = ones(N2, 1);
+b2 = 0.1*ones(N2, 1);
 c2 = ones(N2, 1);
 d2 = ones(N2, 1);
 
 % Para la funcion sigmoide 3
 a3 = ones(N3, 1);
-b3 = ones(N3, 1);
+b3 = 0.1*ones(N3, 1);
 c3 = ones(N3, 1);
 d3 = ones(N3, 1);
 
 %Dentro de este ciclo for se realiza el movimiento de la ventana para ir
 %asignando los valores a cada una de las entradas, de manera que podamos
 %recorrernos a traves de todo el documento de los datos adquiridos
-for n = 2:1:24
+for n = 2:1:length(file)-2
     
-    if (n == 24)
-        break
-    end
-
+    
     %Asignamos los valores de las transformadas de fourier a nuestras
     %entradas
     u1 = [FFT1(n,1),FFT2(n,1),FFT3(n,1),FFT4(n,1),FFT5(n,1),FFT6(n,1),FFT7(n,1)];
@@ -91,52 +88,58 @@ for n = 2:1:24
     %Primera capa
     for i1 = 1:N1
     
-        Sig1(i1) = (a1(i1) / (1 + exp(-c1(i1) * (uA(i1) - b1(i1))))) + d1(i1);   
+        Sig1(i1,1) = (a1(i1) / (1 + exp(-c1(i1) * (uA(i1) - b1(i1))))) + d1(i1);   
         
-        dSig1(i1)= (a1(i1) / (1 + exp(-c1(i1) * (uA(i1) - b1(i1))))) * ((c1(i1)*exp(-c1(i1) * (uA(i1) - b1(i1)) )) / (1 + exp(-c1(i1) * (uA(i1) - b1(i1)) )) );   
+        dSig1(i1,1)= (a1(i1) / (1 + exp(-c1(i1) * (uA(i1) - b1(i1))))) * ((c1(i1)*exp(-c1(i1) * (uA(i1) - b1(i1)) )) / (1 + exp(-c1(i1) * (uA(i1) - b1(i1)) )) );   
     
     end
 
     %Vector para la segunda capa de tamano 52
     %Se realiza una transposicion de los datos de W1 para poder multiplicar y
     %que nos quede solamente la N de la siguiente capa
-    uB = W1' .* Sig1;
+    uB = W1' * Sig1;
 
     %Segunda capa
     for i2 = 1:N2
     
-        Sig2(i2) = (a2(i2) / (1 + exp(-c2(i2) * (uB(i2) - b2(i2))))) + d2(i2);   
+        Sig2(i2,1) = (a2(i2) / (1 + exp(-c2(i2) * (uB(i2) - b2(i2))))) + d2(i2);   
         
-        dSig2(i2)= (a2(i2) / (1 + exp(-c2(i2) * (uB(i2) - b2(i2))))) * ((c2(i2)*exp(-c2(i2) * (uB(i2) - b2(i2)) )) / (1 + exp(-c2(i2) * (uB(i2) - b2(i2)) )) );   
+        dSig2(i2,1)= (a2(i2) / (1 + exp(-c2(i2) * (uB(i2) - b2(i2))))) * ((c2(i2)*exp(-c2(i2) * (uB(i2) - b2(i2)) )) / (1 + exp(-c2(i2) * (uB(i2) - b2(i2)) )) );   
     
     end
 
     %Vector para la tercera capa de tamano 24
-    uC = W2' .* Sig2;
+    uC = W2' *  Sig2;
 
     %Tercera capa
     for i3 = 1:N3
     
-        Sig3(i3) = (a3(i3) / (1 + exp(-c3(i3) * (uC(i3) - b3(i3))))) + d3(i3);   
+        Sig3(i3,1) = (a3(i3) / (1 + exp(-c3(i3) * (uC(i3) - b3(i3))))) + d3(i3);   
         
-        dSig3(i3)= (a3(i3) / (1 + exp(-c3(i3) * (uB(i3) - b3(i3))))) * ((c3(i3)*exp(-c3(i3) * (uC(i3) - b3(i3)) )) / (1 + exp(-c3(i3) * (uC(i3) - b3(i3)) )) );   
+        dSig3(i3,1)= (a3(i3) / (1 + exp(-c3(i3) * (uB(i3) - b3(i3))))) * ((c3(i3)*exp(-c3(i3) * (uC(i3) - b3(i3)) )) / (1 + exp(-c3(i3) * (uC(i3) - b3(i3)) )) );   
     
     end
 
     %Cuarta capa
-    Mov_NN = m4 * (W3' .* Sig3);
+    %se transpone n de manera que se multiplique (nx1) x (1xn) = n
+    Mov_NN(n) = m4 * (W3' * Sig3);
 
-end
     %% backpropagation
-for n2 = 1 : 1 : 21
 
-    e(1,n2) = target(n2) - Mov_NN(n2);
+    e(n) = target(n) - Mov_NN(n);
+    
+    figure(1)
+    plot(e)
+    pause(0.1)
+    Se = Se + 0.5 * e(n)^2;
 
-%     Se(1,n2) = Se(n2) + 0.5 * e(n2)^2;
+    grad3 =  (-2 * (e(n) * m4 * Sig3));
+    
+    grad2 =  ( -2 * (e(n) * Mov_NN(n) * Sig2 * W3' * diag(dSig3)));
 
-    grad1(n2) = -2 * (grad1(n2) + (e(n2) * Mov_NN(n2) * Sig3(n2) * dSig2(n2) * Sig1(n2)));
-    grad2(n2) = -2 * (grad2(n2) + (e(n2) * Mov_NN(n2) * dSig3(n2) * Sig2(n2)));
-    grad3(n2) = -2 * (grad3(n2) + (e(n2) * m4 * Sig3(n2)));
+    grad1 =  (-2 * (e(n) * Mov_NN(n) * Sig1 * (W3' * diag(dSig3)) * (W2'*diag(dSig2) )));
+  
+    
 
     W3 = W3 - alfa3 * grad3;
     W2 = W2 - alfa2 * grad2;
