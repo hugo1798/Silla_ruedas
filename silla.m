@@ -20,9 +20,9 @@ suma1 = 0;
 suma = 0;
 
 %Parametros de ajuste de los pesos
-alfa1 = 0.0008;
-alfa2 = 0.0004;
-alfa3 = 0.0003;
+alfa1 = 0.0000125;
+alfa2 = 0.0001;
+alfa3 = 0.000008;
 alfa=0.3;
 %% Estructurade la red
 
