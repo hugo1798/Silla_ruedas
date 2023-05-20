@@ -23,7 +23,7 @@ suma = 0;
 alfa1 = 0.0000125;
 alfa2 = 0.0001;
 alfa3 = 0.000008;
-alfa=0.3;
+alfa = 0.3;
 %% Estructurade la red
 
 N1 = 21; %Capa de entrada
