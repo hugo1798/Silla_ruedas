@@ -30,6 +30,7 @@ float vc[] = {-2};
 float uA[1][21];
 float uB[52];
 float uC[24];
+float target[1][24];
 
 //Funciones de activacion sigmoide
 
@@ -75,8 +76,8 @@ float grad3[24][1];
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
-
+  Serial.begin(115200);
+  Serial.print("Hola mundo");
   //CREANDO MATRICES PARA PESOS, TRANSPUESTA DE LOS PESOS, GRADIENTES Y PARAMETROS DE LA FUNCION SIGMOIDE
   //i realiza el movimiento en filas
   for (int i1 = 0; i1 = N1; i1++){
@@ -90,6 +91,7 @@ void setup() {
     c1[i1] = 1.0;
     d1[i1] = 1.0;
   }
+  
   for (int i2 = 0; i2 = N2; i2 ++){
     //j realiza el movimiento en columnas
     for (int j2 = 0; j2 = N3; j2 ++){
@@ -153,10 +155,11 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  Serial.print("Hola mundo");
+  //delay(10000);
   //Lectura y asignacion de valor uA
 
-    
+      
   //----------------PRIMERA CAPA------------------
   for (int i11 = 0; i11 = N1; i11++){
     sig1[i11][1] = (a1[i11] / (1 + exp(-c1[i11] * (uA[1][i11] - b1[i11])))) + d1[i11];
@@ -193,10 +196,12 @@ void loop() {
   for (int i33 = 0; i33 = 24; i33++){
     Mov_NN[1][i33] = m4[1] * Mov_NN[1][i33];
   }
+
+  
   
 //----------------BACKPROPAGATION-----------------------
   for (int i = 0; i = 21; i ++){
-    e[1][i] = uA[1][i] - Mov_NN[1][i];
+    e[1][i] = target[1][i] - Mov_NN[1][i];
   }
   // generar las diagonales de la derivada de sigma
     //para dSig1
