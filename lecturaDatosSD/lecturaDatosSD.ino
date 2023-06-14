@@ -29,8 +29,9 @@ Sd2Card card;
 const int chipSelect = 53;
 char row1[M];
 char uA[21];
-int i = 0, k = 0, j = 0;
-long data[8];
+int i = 0, k = 0, j = 0, coma = 0;
+// Aqui se almacenan las variables de la fft
+long data[21];
 char flag=0;
 int N1, N2;
 void setup() {
@@ -63,7 +64,7 @@ void setup() {
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  File dataFile = SD.open("DATA1T.TXT");
+  File dataFile = SD.open("DATAEM~1.TXT");
 
   // if the file is available, read it:
   i=0;
@@ -82,47 +83,54 @@ void setup() {
     Serial.println("error opening datalog.txt");
   }
   dataFile.close();
-  j=0;
 }
  
-void loop()
-{
-  flag=0;
-  // Comienza la conversion de los datos
-  if(flag==0)
-    {
-      N1=0; 
-      N2=0;
-      for(j = 0; j < 3999; j++)
-      {    
-        data[N1]=0.0;
-        if(row1[j] != 10)
-        {  
-          //Serial.write(row1[j]);  
-          if(row1[j]== 44)
-            {
-              for(k=0;k<N2;k++)
-              { //Serial.write(uA[k]); 
-                data[N1] = ((uA[k]-48) * pow(10,N2-k-1)) + data[N1];
-              }  
-              Serial.write('C');
-              Serial.println(data[N1]);
-              //Serial.write(10); 
-              N1++;
-              N2=0;
-              
-            }
-          else
-          {
-              uA[N2]=row1[j];
-              N2++;
-          } 
+void loop(){
+  //Contador que permite movernos en los datos dentro del array de data
+  N1=0; 
+  //Contador para determinar la posicion del valor, si es unidad, decena, centena
+  N2=0;  
+  //Bucle para iterar dentro de todo el array de row1 que contiene todos los datos del archivo
+  for(j = 0; j < 6999; j++){  
+    //Array que almacena los datos ya convertidos
+    data[N1]=0.0;
+    //Serial.print("La coma vale");
+    //Serial.print(coma);
+    //Determinar si existe un salto de linea
+    if(row1[j] != 10){  
+      // No existe un salto de linea
+      // Determinar si existe una coma
+      if(row1[j] == 44){
+        // Bucle para realizar la conversion de los valores a unidades, decenas, centenas ...
+        for(k=0;k<N2;k++){
+          data[N1] = ((uA[k]-48) * pow(10,N2-k-1)) + data[N1];
+        }  
+        //Serial.write('C');
+        //Serial.println(data[N1]);
+        // El incremento en N1 permite que cambiemos al siguiente dato a guardar
+        N1++;
+        N2=0;
+        // hay un total de 7 comas
+        coma++;
+        if(coma == 7){
+          j = j + 3;
+          coma = 0;
         }
-        else
-        {Serial.write(10); }
       }
+      else{
+        // Se almacenan los valores para despues convertirse en la variable data
+        // No es realmente uA, refiriendonos a la entrada de la red neuronal
+        uA[N2]=row1[j];
+        N2++;
+      } 
     }
-   // flag=1; 
+    else{
+      // Si existe un salto de linea
+      // Presente en 65
+      //j = j + 1;
+    }
+    //Serial.println(j);
+  }
 }
 
 

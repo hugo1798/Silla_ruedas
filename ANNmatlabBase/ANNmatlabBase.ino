@@ -155,7 +155,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.print("Hola mundo");
+  //Serial.print("Hola mundo");
   //delay(10000);
   //Lectura y asignacion de valor uA
 
