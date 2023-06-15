@@ -31,7 +31,7 @@ char row1[M];
 char uA[21];
 int i = 0, k = 0, j = 0, coma = 0;
 // Aqui se almacenan las variables de la fft
-long data[21];
+long data[420];
 char flag=0;
 int N1, N2;
 void setup() {
@@ -106,7 +106,7 @@ void loop(){
           data[N1] = ((uA[k]-48) * pow(10,N2-k-1)) + data[N1];
         }  
         //Serial.write('C');
-        //Serial.println(data[N1]);
+        Serial.println(data[N1]);
         // El incremento en N1 permite que cambiemos al siguiente dato a guardar
         N1++;
         N2=0;
